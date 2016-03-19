@@ -12,6 +12,10 @@ class MenuViewController: UIViewController, UICollectionViewDelegateFlowLayout, 
 
     @IBOutlet weak var collectionView: UICollectionView!
     
+    @IBAction func unwindToMenu(segue:UIStoryboardSegue) {
+        print("unwind")
+    }
+    
     var menuItems: [MenuItem]!
     var menuType: MenuType!
 
@@ -22,6 +26,12 @@ class MenuViewController: UIViewController, UICollectionViewDelegateFlowLayout, 
         collectionView.backgroundColor = UIColor.whiteColor()
         getMenuItems()
 
+    }
+    
+    func addItemToOrder(item: OrderItem) {
+        if let tbc = self.tabBarController as? MenuTabBarController {
+            tbc.addItemToOrder(item)
+        }
     }
     
     func getMenuItems() {

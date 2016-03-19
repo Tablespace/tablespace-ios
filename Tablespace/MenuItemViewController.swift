@@ -9,8 +9,8 @@
 import UIKit
 
 class MenuItemViewController: UIViewController {
-
-    @IBAction func doneAction(sender: AnyObject) {
+    
+    @IBAction func backAction(sender: AnyObject) {
         self.dismissViewControllerAnimated(true, completion: nil)
     }
     
@@ -25,8 +25,11 @@ class MenuItemViewController: UIViewController {
     
     @IBOutlet weak var modificationsTextView: UITextView!
     
+    @IBOutlet weak var infoView: UIView!
+    
     @IBAction func quantityChanged(sender: AnyObject) {
-        quantityLabel.text = "\(quantityStepper.value)"
+        let quantity = Int(floor(quantityStepper.value))
+        quantityLabel.text = "\(quantity)"
     }
     
     var item: MenuItem!
@@ -35,18 +38,40 @@ class MenuItemViewController: UIViewController {
         super.viewDidLoad()
         
         quantityStepper.value = 1
-        quantityLabel.text = "\(quantityStepper.value)"
+        
+        let quantity = Int(floor(quantityStepper.value))
+        quantityLabel.text = "\(quantity)"
 
         imageView.image = item.image
         nameLabel.text = item.name
-        priceLabel.text = "\(item.price)"
+        
+        priceLabel.text = "$\(item.price)"
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+
+    @IBAction func addToOrder(sender: AnyObject) {
+        let orderItem = OrderItem(menuItem: item, quantity: Int(floor(quantityStepper.value)))
+        performSegueWithIdentifier("UnwindToMenu", sender: orderItem)
+    }
+
+//    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+//        let touch = touches.first as UITouch!
+//        let point = touch.locationInView(self.view)
+//        if !infoView.frame.contains(point) {
+//            performSegueWithIdentifier("UnwindToMenu", sender: nil)
+//        }
+//    }
+    
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == "UnwindToMenu" {
+            if let newItem = sender as? OrderItem {
+                if let dvc = segue.destinationViewController as? MenuViewController {
+                    dvc.addItemToOrder(newItem)
+                }
+            }
+        }
     }
     
-
-
+    
 }
